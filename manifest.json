@@ -1,0 +1,13 @@
+{
+  "id": "SteamIntegration",
+  "name": "Steam Integration",
+  "version": "1.0.0",
+  "api_version": 1,
+  "type": "integration",
+  "repository": "swolfgang-dev/playlite-plugin-steam-integration",
+  "minimum_playlite_version": "0.2.42",
+  "requirements": [
+    "vdf>=3.4"
+  ],
+  "description": "Import installed Steam games, launch through Steam, and detect running games for playtime tracking."
+}
