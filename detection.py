@@ -29,7 +29,7 @@ def process_snapshot(proc=Path('/proc')):
             executable = os.readlink(entry / 'exe')
             if Path(executable).name.casefold() in CLIENT_PROCESSES:
                 continue
-            records.append({'appid': str(int(identity)), 'exe': executable})
+            records.append({'pid': int(entry.name), 'start': stat[19], 'appid': str(int(identity)), 'exe': executable})
         except (OSError, ValueError, IndexError):
             continue
     return records

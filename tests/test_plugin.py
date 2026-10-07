@@ -127,7 +127,7 @@ class IntegrationTests(unittest.TestCase):
                 (entry / 'stat').write_text(f'{pid} (game) {state} ' + '0 ' * 30)
                 (entry / 'environ').write_bytes(f'SteamAppId={identity}\0'.encode())
                 (entry / 'exe').symlink_to(exe)
-            self.assertEqual(detection.process_snapshot(proc), [{'appid': '10', 'exe': '/games/game'}])
+            self.assertEqual(detection.process_snapshot(proc), [{'pid': 1, 'start': '0', 'appid': '10', 'exe': '/games/game'}])
             with patch.object(detection.os, 'getuid', return_value=-1):
                 self.assertEqual(detection.process_snapshot(proc), [])
 
@@ -183,3 +183,13 @@ class LibrarySettingsTests(unittest.TestCase):
                 self.assertEqual(runtime.installation()[0], automatic)
                 widget.deleteLater()
                 app.processEvents()
+
+
+class StopTests(unittest.TestCase):
+    def test_only_selected_app_is_stopped(self):
+        plugin = module.Plugin()
+        plugin.id = 'SteamIntegration'
+        game = {'Id': 'game', 'PlayActions': [{'Integration': plugin.id, 'GameId': '10', 'Name': 'Play'}]}
+        records = [{'pid': 1, 'start': 'a', 'appid': '10'}, {'pid': 2, 'start': 'b', 'appid': '20'}]
+        with patch('steam_test_plugin.detection.process_snapshot', return_value=records), patch('playlite.process_control.terminate_processes', side_effect=lambda selected: list(selected)):
+            self.assertEqual(plugin.stop(game), records[:1])

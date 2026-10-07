@@ -45,6 +45,14 @@ class Plugin(IntegrationPlugin):
                     for action in actions_for(game, [self]) if action.get('Integration') == self.id]
         return detect_running(resolved, process_snapshot()) if resolved else set()
 
+    def stop(self, game):
+        from playlite.play_actions import actions_for, action_game
+        from playlite.process_control import terminate_processes
+        from .detection import process_snapshot
+        identities = {str(action_game(game, action, self).get('SteamAppId'))
+                      for action in actions_for(game, [self]) if action.get('Integration') == self.id}
+        return terminate_processes(record for record in process_snapshot() if record['appid'] in identities)
+
     def create_action_editor(self, action, parent=None):
         from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel
         class Settings(QWidget):
