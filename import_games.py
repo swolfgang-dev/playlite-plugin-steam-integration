@@ -1,7 +1,7 @@
 """Single-game import in the Add Game editor, matching other integrations."""
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (QVBoxLayout, QPushButton, QDialog, QLineEdit,
-                             QListWidget, QListWidgetItem, QDialogButtonBox, QLabel)
+                             QListWidget, QListWidgetItem, QDialogButtonBox, QLabel, QInputDialog)
 from playlite.providers import InstallationPlugin, discover_plugins
 from playlite.lifecycle import run_dialog, show_warning
 
@@ -13,7 +13,7 @@ class Plugin(InstallationPlugin):
     def create_editor(self, editor, game):
         from playlite.manual_installation import ManualInstallation
         self.manual = ManualInstallation()
-        widget = self.manual.create_editor(editor, game, field_keys=('InstallDirectory', 'SteamId'))
+        widget = self.manual.create_editor(editor, game, field_keys=('Executable', 'InstallDirectory', 'SteamId'))
         widget.selected = dict(game) if game.get('SteamAppId') else None
         layout = widget.layout()
         widget.summary = QLabel(game.get('Name', '') if widget.selected else 'No Steam game selected')
@@ -70,7 +70,17 @@ class Plugin(InstallationPlugin):
             item = choices.currentItem()
             if item is None or item.isHidden():
                 return
-            widget.selected = item.data(Qt.ItemDataRole.UserRole)
+            selected = dict(item.data(Qt.ItemDataRole.UserRole))
+            from .executables import candidates
+            executables = candidates(selected['InstallDirectory'])
+            if len(executables) == 1:
+                selected['Executable'] = executables[0]
+            elif executables:
+                executable, accepted = QInputDialog.getItem(editor, 'Choose game executable',
+                    'Multiple executables found. Select the game executable, or cancel to browse manually.', executables, 0, False)
+                if accepted:selected['Executable'] = executable
+            selected.setdefault('Executable','')
+            widget.selected = selected
             editor.apply_metadata({key: value for key, value in widget.selected.items() if key != 'Id'})
             widget.summary.setText(widget.selected['Name'])
             editor.flags['IsInstalled'].setChecked(True)
@@ -97,4 +107,7 @@ class Plugin(InstallationPlugin):
         if game is None:
             raise ValueError('Installed Steam app ID not found.')
         game['InstallationMethod'] = self.id
+        from .executables import candidates
+        executables = candidates(game['InstallDirectory'])
+        if len(executables) == 1:game['Executable'] = executables[0]
         return game

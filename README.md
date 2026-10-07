@@ -58,3 +58,5 @@ The build creates `dist/plugin.zip` and `dist/SHA256SUMS`, with `manifest.json` 
 `plugin.py` at the archive root. Push a tag matching the manifest version, such as
 `v1.0.0`, to run tests and publish a GitHub release. The standalone plugin archive
 does not contain Playlite, tests, tools, or CI files.
+
+Steam import scans the selected installation folder for valid Windows x86/x64 executable files, preferring Unity Mono game executables over other launchers. A single candidate is filled automatically; multiple candidates open a chooser. The executable field remains available for manual browsing. Scanning is limited to four directory levels and 500 folders and does not follow symlink directories.
