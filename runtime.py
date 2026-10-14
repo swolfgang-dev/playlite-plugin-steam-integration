@@ -10,6 +10,7 @@ APP_ID = 'com.valvesoftware.Steam'
 def environment():
     """Lutris belongs to the desktop user, outside Playlite's private profile."""
     env = dict(os.environ)
+    env.setdefault('MANGOHUD', '1')
     if env.get('PLAYLITE_PROFILE') == 'repo':
         env['HOME'] = env.get('PLAYLITE_HOST_HOME') or pwd.getpwuid(os.getuid()).pw_dir
         for name in ('DATA', 'CONFIG', 'CACHE', 'STATE'):

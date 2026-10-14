@@ -60,3 +60,5 @@ The build creates `dist/plugin.zip` and `dist/SHA256SUMS`, with `manifest.json` 
 does not contain Playlite, tests, tools, or CI files.
 
 Steam import scans the selected installation folder for valid Windows x86/x64 executable files, preferring Unity Mono game executables over other launchers. A single candidate is filled automatically; multiple candidates open a chooser. The executable field remains available for manual browsing. Scanning is limited to four directory levels and 500 folders and does not follow symlink directories.
+
+Steam launches default to `MANGOHUD=1` when the host environment does not already set it. An explicit value such as `MANGOHUD=0` is preserved. Install MangoHud separately to use the overlay.
