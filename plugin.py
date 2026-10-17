@@ -94,12 +94,17 @@ class Plugin(IntegrationPlugin):
         layout.addStretch()
         return widget
 
-    def save_settings(self, widget):
+    def validate_settings(self, widget):
         from pathlib import Path
         from PyQt6.QtCore import QSettings
         value = widget.library_folder.text().strip()
         if value and (not Path(value).is_absolute() or not (Path(value) / 'steamapps').is_dir()):
             raise ValueError('Choose an absolute Steam library folder containing steamapps.')
+        return value
+
+    def save_settings(self, widget):
+        from PyQt6.QtCore import QSettings
+        value = self.validate_settings(widget)
         settings = QSettings('Playlite', 'Steam')
         settings.setValue('LibraryDirectory', value)
         settings.sync()
