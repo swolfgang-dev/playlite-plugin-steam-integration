@@ -1,7 +1,7 @@
 # Steam Integration for Playlite
 
 Import installed Steam games, launch through Steam, and detect game sessions for
-Playlite's playtime tracking. Requires Playlite 0.2.41 or later, plugin API 1.
+Playlite's playtime tracking. Requires Playlite 0.2.87 or later, plugin API 1.
 
 ## Use
 
