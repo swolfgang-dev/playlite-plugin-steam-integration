@@ -2,24 +2,15 @@
 import os
 from pathlib import Path
 import shutil
-import pwd
+from playlite.desktop import host_environment
 
 APP_ID = 'com.valvesoftware.Steam'
 
 
 def environment():
-    """Lutris belongs to the desktop user, outside Playlite's private profile."""
-    env = dict(os.environ)
+    """Restore the desktop user's environment when launching outside Playlite."""
+    env = host_environment()
     env.setdefault('MANGOHUD', '1')
-    if env.get('PLAYLITE_PROFILE') == 'repo':
-        env['HOME'] = env.get('PLAYLITE_HOST_HOME') or pwd.getpwuid(os.getuid()).pw_dir
-        for name in ('DATA', 'CONFIG', 'CACHE', 'STATE'):
-            variable = f'XDG_{name}_HOME'
-            saved = env.get(f'PLAYLITE_HOST_{variable}')
-            if saved:
-                env[variable] = saved
-            else:
-                env.pop(variable, None)
     return env
 
 

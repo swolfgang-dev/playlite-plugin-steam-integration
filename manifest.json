@@ -5,7 +5,7 @@
   "api_version": 1,
   "type": "integration",
   "repository": "swolfgang-dev/playlite-plugin-steam-integration",
-  "minimum_playlite_version": "0.2.44",
+  "minimum_playlite_version": "0.2.87",
   "requirements": [
     "vdf>=3.4"
   ],
